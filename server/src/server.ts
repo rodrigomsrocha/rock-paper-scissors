@@ -20,19 +20,18 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
   socket.on('join room', async (data, callback) => {
     const room = await io.in(data.room).fetchSockets()
+
     if (room.length >= 2) {
-      callback({ ok: false })
+      callback({ ok: false, data: null })
       return
     }
 
+    socket.data.name = data.name
+    socket.data.room = data.room
+
     socket.join(data.room)
-    console.log(`${socket.id} has joined room: ${data.room}`)
 
-    socket
-      .to(data.room)
-      .emit('user entered', { message: `${data.name} entered te room` })
-
-    callback({ ok: true })
+    callback({ ok: true, data: socket.data })
   })
 
   console.log(`new socket connection: ${socket.id}`)

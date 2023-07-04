@@ -19,10 +19,12 @@ export function RoomForm() {
       (response: any) => {
         console.log(response)
 
-        if (response.ok === false) {
+        if (response.ok === false && response.data !== null) {
           alert('sala cheia')
           return
         }
+
+        sessionStorage.setItem('client-info', JSON.stringify(response.data))
 
         router.push('/room')
       },
